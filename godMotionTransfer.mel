@@ -1,0 +1,28 @@
+//Simple God motion transfer bake mel script
+string $sel[] = `ls -sl`;
+float $minTime = `playbackOptions -q -minTime` ;
+float $maxTime = `playbackOptions -q -maxTime` ;
+string $tokenized[];
+tokenize $sel[1] ":" $tokenized;
+string $secondGodnoNS = $tokenized[1];
+$mainGod = $sel[0];
+$secondGod = $sel[1];
+//simple script that bakes the anim to the second control that's selected
+spaceLocator -p 0 0 0 -name "constrainerobject";
+select -r $secondGod;
+select -tgl constrainerobject ;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","0","1","","1" };
+bakeResults -simulation true -t ($minTime + ":" + $maxTime) -sampleBy 1 -disableImplicitControl true -preserveOutsideKeys false -sparseAnimCurveBake false -removeBakedAttributeFromLayer false -bakeOnOverrideLayer false -minimizeRotation true -controlPoints false -shape true {"constrainerobject"};
+select -r constrainerobject_parentConstraint1 ;
+doDelete;
+select -r constrainerobject ;
+select -tgl $secondGod;
+doCreateParentConstraintArgList 1 { "0","0","0","0","0","0","0","0","1","","1" };
+currentTime -u 0 1;
+select -r $mainGod;
+cutKey -cl;
+select -r $secondGod;
+bakeResults -simulation true -t ($minTime + ":" + $maxTime) -sampleBy 1 -disableImplicitControl true -preserveOutsideKeys false -sparseAnimCurveBake false -removeBakedAttributeFromLayer false -bakeOnOverrideLayer false -minimizeRotation true -controlPoints false -shape true;
+select -r ($secondGodnoNS + "_parentConstraint1") ;
+select -tgl constrainerobject ;
+doDelete;

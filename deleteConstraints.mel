@@ -1,0 +1,7 @@
+//Delete Constraints on selected mel
+setKeyframe;
+string $attribute[] = `listAttr -ud -st "blendParent*"`;
+string $sel[] = `ls -sl`;
+string $selectedconstraints[] = `listConnections -t "constraint"`;
+delete $selectedconstraints;
+deleteAttr -attribute $attribute $sel[0];
